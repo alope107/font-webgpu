@@ -1,64 +1,49 @@
 // Want to recompute layouts?
 // Go here! https://webgpufundamentals.org/webgpu/lessons/resources/wgsl-offset-computer.html
 
+export const dotStruct = (() => { 
+    const code = /* wgsl */`
+        struct Dot {
+            color: vec4f, // 16 bytes
+            position: vec2f, // 8 bytes
+            // pad 8 bytes
+        }  // total 32 bytes
+    `
+    const byteCount = 32;
+    const floatCount = byteCount / 4;
+    const createEmptyArray = (dotCount) => {
+        const data = new ArrayBuffer(byteCount * dotCount);
+        return {
+            data,
+            views: {
+                colorView: new Float32Array(data, 0),
+                positionView: new Float32Array(data, 16),
+            },
+            count: dotCount
+        };
+    };
+    const createFilledArray = (dotData) => {
+        console.log(dotData);
+        const data = createEmptyArray(dotData.length);
+        const {colorView, positionView} = data.views;
+        dotData.forEach(({color, position}, i) => {
+            colorView.set(color, i*floatCount);
+            positionView.set(position, i*floatCount);
+            // pad set to 0s by default
+        });
+        return data;
+    };
+    return {
+        code,
+        byteCount,
+        floatCount,
+        createEmptyArray,
+        createFilledArray
+    };
+})();
+
 // Old structs for reference
-// export const circleStruct = (() => { 
-//     const code = /* wgsl */`
-//         struct Circle {
-//             color: vec4f, // 16 bytes
-//             center: vec2f, // 8 bytes
-//             velocity: vec2f, // 8 bytes
-//             radius: f32, // 4 bytes
-//             grabbed: u32, // 4 bytes
-//             lowerForce: vec2f, // 8 bytes the sum of the forces applied by the lower indexed 
-//             lowerCenter: vec2f, // 8 bytes the desired position pushed by the lower indexed
-//             upperForce: vec2f, // 8 bytes the sum of the forces applied by the upper indexed
-//             upperCenter: vec2f, // 8 bytes the desired position pushed by the upper indexed
-//             index: u32, // 4 bytes
-//             // pad 4 bytes
-//         }  // total 80 bytes
-//     `
-//     const byteCount = 80;
-//     const floatCount = byteCount / 4;
-//     const createEmptyArray = (circleCount) => {
-//         const data = new ArrayBuffer(byteCount * circleCount);
-//         return {
-//             data,
-//             views: {
-//                 colorView: new Float32Array(data, 0),
-//                 centerView: new Float32Array(data, 16),
-//                 velocityView: new Float32Array(data, 24),
-//                 radiusView: new Float32Array(data, 32),
-//                 grabbedView: new Uint32Array(data, 36),
-//                 lowerForce: new Float32Array(data, 40),
-//                 lowerCenter: new Float32Array(data, 48),
-//                 upperForce: new Float32Array(data, 56),
-//                 upperCenter: new Float32Array(data, 64),
-//                 index: new Uint32Array(data, 72),
-//             },
-//             count: circleCount
-//         };
-//     };
-//     const createFilledArray = (circleData) => {
-//         const data = createEmptyArray(circleData.length);
-//         const {colorView, centerView, velocityView, radiusView} = data.views;
-//         circleData.forEach(({color, center, velocity, radius}, i) => {
-//             colorView.set(color, i*floatCount);
-//             centerView.set(center, i*floatCount);
-//             velocityView.set(velocity, i*floatCount);
-//             radiusView.set([radius], i*floatCount);
-//             // grabbed, lowers, uppers, index and pad set to 0s by default
-//         });
-//         return data;
-//     };
-//     return {
-//         code,
-//         byteCount,
-//         floatCount,
-//         createEmptyArray,
-//         createFilledArray
-//     };
-// })();
+
 
 // export const uniformsStruct = (() => { 
 //     const code = /* wgsl */ `

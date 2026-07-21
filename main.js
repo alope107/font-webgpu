@@ -1,10 +1,14 @@
 import { computeShaderCode } from "./compute.js";
+import { randDots } from "./random.js";
 import { renderShaderCode } from "./render.js";
 import { startResizeObservation } from "./resize.js";
+import { dotStruct } from "./structs.js";
 
 let pointerLoc = [0, 0];
 let pointerHeldNow = false;
 let pointerHeldLastFrame = false;
+
+const DOT_COUNT = 100;
 
 
 const main = async () => {
@@ -82,37 +86,37 @@ const main = async () => {
         ]
     };
 
+    const dots = dotStruct.createFilledArray(randDots(DOT_COUNT));
+
 
     // Kept for reference
-    // const circlePingBuffer = device.createBuffer({
-    //     label: "circlePingBuffer",
-    //     size: circles.data.byteLength,
-    //     usage: GPUBufferUsage.STORAGE |
-    //            GPUBufferUsage.COPY_DST |
-    //         //    GPUBufferUsage.COPY_SRC | // used for debugging
-    //            GPUBufferUsage.VERTEX
-    // });
+    const dotBuffer = device.createBuffer({
+        label: "dotBuffer",
+        size: dots.data.byteLength,
+        usage: GPUBufferUsage.STORAGE |
+               GPUBufferUsage.COPY_DST |
+            //    GPUBufferUsage.COPY_SRC | // used for debugging
+               GPUBufferUsage.VERTEX
+    });
 
+    const computeBindGroup = device.createBindGroup({
+        label: "computeBindGroup",
+        layout: moveDotsPipeline.getBindGroupLayout(0),
+        entries: [
+            {binding: 0, resource: dotBuffer},
+        ]
+    });
 
+    const renderBindGroup = device.createBindGroup({
+        label: "renderBindGroup",
+        layout: renderPipeline.getBindGroupLayout(0),
+        entries: [
+            {binding: 0, resource: dotBuffer},
+        ]
+    });
 
-    
     // kept for reference
-    // const sortPingToPongBindGroup = device.createBindGroup({
-    //     label: "sortPingToPongBindGroup",
-    //     layout: sortPipeline.getBindGroupLayout(0),
-    //     entries: [
-    //         {binding: 0, resource: circlePingBuffer},
-    //         {binding: 1, resource: circlePongBuffer},
-    //         {binding: 2, resource: uniformBuffer}
-    //     ]
-    // });
-
-
-
-
-    // kept for reference
-    // device.queue.writeBuffer(circlePingBuffer, 0, circles.data);
-
+    device.queue.writeBuffer(dotBuffer, 0, dots.data);
 
     renderTarget.addEventListener("pointermove", () => {
         // Rescale to clip space, the scaling used by the compute/vertex shaders
@@ -130,17 +134,15 @@ const main = async () => {
 
         let computePass = encoder.beginComputePass();
         computePass.setPipeline(moveDotsPipeline);
-        // kept for reference
-        // computePass.setBindGroup(0, sortPongToPingBindGroup);
-        computePass.dispatchWorkgroups(1); // Later we will parallelize
+        computePass.setBindGroup(0, computeBindGroup);
+        computePass.dispatchWorkgroups(dots.count); // Later we will parallelize
         computePass.end();
 
         renderPassDescriptor.colorAttachments[0].view = ctx.getCurrentTexture().createView();
         const renderPass = encoder.beginRenderPass(renderPassDescriptor);
         renderPass.setPipeline(renderPipeline);
-        // kept for reference
-        // renderPass.setBindGroup(0,renderPingBindGroup);
-        renderPass.draw(1, 3);
+        renderPass.setBindGroup(0, renderBindGroup);
+        renderPass.draw(1, dots.count);
         renderPass.end();
 
         const commandBuffer = encoder.finish();
