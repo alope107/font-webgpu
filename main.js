@@ -3,8 +3,9 @@ import { randClip, randDots } from "./random.js";
 import { extractPixels } from "./raster.js";
 import { renderShaderCode } from "./render.js";
 import { startResizeObservation } from "./resize.js";
-import { dotStruct } from "./structs.js";
+import { dotStruct, uniformsStruct } from "./structs.js";
 
+let accel = {x: 0, y:-9.8, z:0};
 let pointerLoc = [0, 0];
 let pointerHeldNow = false;
 let pointerHeldLastFrame = false;
@@ -38,7 +39,7 @@ const main = async () => {
 
     // TODO: proper sizing
     fontRasterizer.width = 1035;//renderTarget.width;
-    fontRasterizer.height = 646;//renderTarget.height;
+    fontRasterizer.height = 746;//renderTarget.height;
 
     const fontCtx = fontRasterizer.getContext("2d");
     fontCtx.font = "96px serif";
@@ -121,11 +122,26 @@ const main = async () => {
                GPUBufferUsage.VERTEX
     });
 
+
+    let uniform = uniformsStruct.createFilled({
+        gravity: [0, 0],
+        pointerLoc: [0, 0],//TODO
+        pointerHeld: 0,// TODO
+        pointerPressed: 0 // TODO
+    });
+    const uniformBuffer = device.createBuffer({
+        label: "uniform buffer",
+        size: uniform.data.byteLength,
+        usage: GPUBufferUsage.UNIFORM | 
+               GPUBufferUsage.COPY_DST 
+    });
+
     const computeBindGroup = device.createBindGroup({
         label: "computeBindGroup",
         layout: moveDotsPipeline.getBindGroupLayout(0),
         entries: [
             {binding: 0, resource: dotBuffer},
+            {binding: 1, resource: uniformBuffer},
         ]
     });
 
@@ -173,13 +189,14 @@ const main = async () => {
     };
 
     const animationFrame = async (timestamp) => {
-        // uniform = uniformsStruct.createFilled({
-        //     pointerLoc: pointerLoc,
-        //     pointerHeld: pointerHeldNow,
-        //     pointerPressed: !pointerHeldLastFrame && pointerHeldNow 
-        // });
+        uniform = uniformsStruct.createFilled({
+            gravity: [0, 0],
+            pointerLoc: pointerLoc,
+            pointerHeld: pointerHeldNow,
+            pointerPressed: !pointerHeldLastFrame && pointerHeldNow 
+        });
         pointerHeldLastFrame = pointerHeldNow;
-        // device.queue.writeBuffer(uniformBuffer, 0, uniform.data);
+        device.queue.writeBuffer(uniformBuffer, 0, uniform.data);
         render();
         requestAnimationFrame(animationFrame);
     };
@@ -213,7 +230,7 @@ main();
 //     main();
 // }
 
-//main();
+main();
 
 // const imageData = fontCtx.getImageData(0, 0, fontRasterizer.width, fontRasterizer.height);
 // console.log(imageData);

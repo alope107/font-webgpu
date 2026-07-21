@@ -1,12 +1,14 @@
 import { global_invocation_index } from "./linear_indexing.js";
-import { dotStruct } from "./structs.js";
+import { dotStruct, uniformsStruct } from "./structs.js";
 
 export const computeShaderCode = /* wgsl */ `
 ${global_invocation_index}
 
 ${dotStruct.code}
+${uniformsStruct.code}
 
 @group(0) @binding(0) var<storage, read_write> dots : array<Dot>; 
+@group(0) @binding(1) var<uniform> uniforms : Uniforms;
 
 // TODO: better workgroup size UPDATE THE GLOBAL INDEX CALC IF CHANGED
 @compute @workgroup_size(1) fn moveDots(
@@ -16,6 +18,9 @@ ${dotStruct.code}
         let id = global_invocation_index(workgroup_id, local_invocation_index, num_workgroups,
                                          1 /* CHANGE ME WHEN WORKGROUP SIZE CHANGES */);
         if(id >= arrayLength(&dots)) { return; }
-        dots[id].position += dots[id].velocity;
+        if (uniforms.pointerHeld > 0) {
+            dots[id].position += dots[id].velocity;
+        }
+        
     }
 `;
