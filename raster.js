@@ -4,6 +4,7 @@ import { uint8RGBtoF32 } from "./color.js";
 
 
 // TODO: this should really actually be happening in a shader, huh?
+// I could just be taking the texture directly....
 // .. Although this allows us to precompute needed pixel count
 
 // extracts sparse array of pixels and colors, excluding fully transparent pixels

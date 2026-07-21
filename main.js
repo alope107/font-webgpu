@@ -35,15 +35,16 @@ const main = async () => {
     // TODO: resize the rasterizer canvas as well?
     startResizeObservation(renderTarget, device.limits.maxTextureDimension2D);
 
+
     // TODO: proper sizing
     fontRasterizer.width = 400;//renderTarget.width;
     fontRasterizer.height = 400;//renderTarget.height;
 
     const fontCtx = fontRasterizer.getContext("2d");
     fontCtx.font = "48px serif";
-    ctx.fillText("YAH", 10, 50);
+    fontCtx.fillText("YAH", 10, 50);
 
-
+    //console.log();
 
 
     // These errors are automatically surfaced in the chrome terminal,
@@ -103,7 +104,7 @@ const main = async () => {
         ]
     };
 
-    const dots = dotStruct.createFilledArray(randDots(DOT_COUNT));
+    const dots = dotStruct.createFilledArray(extractPixels(fontRasterizer, [1, 1, 1, 1]));
 
 
     // Kept for reference
@@ -152,7 +153,7 @@ const main = async () => {
         let computePass = encoder.beginComputePass();
         computePass.setPipeline(moveDotsPipeline);
         computePass.setBindGroup(0, computeBindGroup);
-        computePass.dispatchWorkgroups(dots.count); // Later we will parallelize
+        computePass.dispatchWorkgroups(dots.count);
         computePass.end();
 
         renderPassDescriptor.colorAttachments[0].view = ctx.getCurrentTexture().createView();
@@ -181,6 +182,8 @@ const main = async () => {
     requestAnimationFrame(animationFrame);
 };
 
+main();
+
 // const initializeAccelerometer = async (e) => {
 //     document.getElementById("prompt").remove();
 //     window.addEventListener("devicemotion", (event) => {
@@ -207,19 +210,6 @@ const main = async () => {
 // }
 
 //main();
-
-let fontRasterizer = document.body.appendChild(document.createElement("canvas"));
-fontRasterizer.id = "fontRasterizerZ";// TODO remove Z
-
-    // TODO: proper sizing
-fontRasterizer.width = 400;//renderTarget.width;
-fontRasterizer.height = 400;//renderTarget.height;
-
-const fontCtx = fontRasterizer.getContext("2d");
-fontCtx.font = "48px serif";
-fontCtx.fillText("YAH", 10, 50);
-
-console.log(extractPixels(fontRasterizer, [1, 1, 1, 1]));
 
 // const imageData = fontCtx.getImageData(0, 0, fontRasterizer.width, fontRasterizer.height);
 // console.log(imageData);
