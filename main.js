@@ -1,5 +1,5 @@
 import { computeShaderCode } from "./compute.js";
-import { randDots } from "./random.js";
+import { randClip, randDots } from "./random.js";
 import { extractPixels } from "./raster.js";
 import { renderShaderCode } from "./render.js";
 import { startResizeObservation } from "./resize.js";
@@ -41,8 +41,8 @@ const main = async () => {
     fontRasterizer.height = 646;//renderTarget.height;
 
     const fontCtx = fontRasterizer.getContext("2d");
-    fontCtx.font = "48px serif";
-    fontCtx.fillText("YAH", 40, 40);
+    fontCtx.font = "96px serif";
+    fontCtx.fillText("Kinda half-baked", 300, 300);
 
     //console.log();
 
@@ -104,7 +104,11 @@ const main = async () => {
         ]
     };
 
-    const dots = dotStruct.createFilledArray(extractPixels(fontRasterizer, [1, 1, 1, 1]));
+    const dots = dotStruct.createFilledArray(extractPixels(fontRasterizer, [1, 1, 1, 1]).map(
+        (d) => {
+            return {...d, velocity: [randClip() *.0008, randClip() * .0008]}
+        }
+    ));
 
 
     // Kept for reference

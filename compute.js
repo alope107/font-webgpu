@@ -16,6 +16,6 @@ ${dotStruct.code}
         let id = global_invocation_index(workgroup_id, local_invocation_index, num_workgroups,
                                          1 /* CHANGE ME WHEN WORKGROUP SIZE CHANGES */);
         if(id >= arrayLength(&dots)) { return; }
-        _ = dots[0].position.x;
+        dots[id].position += dots[id].velocity;
     }
 `;

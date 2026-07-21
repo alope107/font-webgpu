@@ -10,6 +10,6 @@ export const toClip = ({row, col},{width, height}) => {
 
 
     ];
-    console.log(clip);
+    // console.log(clip);
     return clip;
 };

@@ -6,7 +6,7 @@ export const dotStruct = (() => {
         struct Dot {
             color: vec4f, // 16 bytes
             position: vec2f, // 8 bytes
-            // pad 8 bytes
+            velocity: vec2f // 8 bytes
         }  // total 32 bytes
     `
     const byteCount = 32;
@@ -18,6 +18,7 @@ export const dotStruct = (() => {
             views: {
                 colorView: new Float32Array(data, 0),
                 positionView: new Float32Array(data, 16),
+                velocityView: new Float32Array(data, 24),
             },
             count: dotCount
         };
@@ -25,11 +26,11 @@ export const dotStruct = (() => {
     const createFilledArray = (dotData) => {
         console.log(dotData);
         const data = createEmptyArray(dotData.length);
-        const {colorView, positionView} = data.views;
-        dotData.forEach(({color, position}, i) => {
+        const {colorView, positionView, velocityView} = data.views;
+        dotData.forEach(({color, position, velocity}, i) => {
             colorView.set(color, i*floatCount);
             positionView.set(position, i*floatCount);
-            // pad set to 0s by default
+            velocityView.set(velocity, i*floatCount)
         });
         return data;
     };
