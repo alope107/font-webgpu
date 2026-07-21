@@ -37,12 +37,12 @@ const main = async () => {
 
 
     // TODO: proper sizing
-    fontRasterizer.width = 400;//renderTarget.width;
-    fontRasterizer.height = 400;//renderTarget.height;
+    fontRasterizer.width = 1035;//renderTarget.width;
+    fontRasterizer.height = 646;//renderTarget.height;
 
     const fontCtx = fontRasterizer.getContext("2d");
     fontCtx.font = "48px serif";
-    fontCtx.fillText("YAH", 10, 50);
+    fontCtx.fillText("YAH", 40, 40);
 
     //console.log();
 

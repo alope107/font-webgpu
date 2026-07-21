@@ -1,7 +1,15 @@
-//[x, y] position, {width, height} dimensions
-export const toClip = (position, dimensions) => {
-    return [
-        (2 * position[0] / dimensions.width) - 1,
-        (2 * position[1] / dimensions.height) - 1
+//{row, col} position, {width, height} dimensions
+export const toClip = ({row, col},{width, height}) => {
+    console.log(row, col);
+    const clip = [
+        //         ((2 * col/ height) - 1),
+        // -((2 * row / width) - 1) + 1,
+
+        ((2 * col/ width) - 1),
+        1 -(2 * row / height),
+
+
     ];
+    console.log(clip);
+    return clip;
 };
