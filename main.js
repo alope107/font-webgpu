@@ -1,5 +1,6 @@
 import { computeShaderCode } from "./compute.js";
 import { randDots } from "./random.js";
+import { extractPixels } from "./raster.js";
 import { renderShaderCode } from "./render.js";
 import { startResizeObservation } from "./resize.js";
 import { dotStruct } from "./structs.js";
@@ -95,7 +96,7 @@ const main = async () => {
         label: "render pass descriptor",
         colorAttachments: [
             {
-                clearValue: [0, 0, 0, 1],
+                clearValue: [0, 1, 0, 1],
                 loadOp: "clear",
                 storeOp: "store"
             }
@@ -218,5 +219,7 @@ const fontCtx = fontRasterizer.getContext("2d");
 fontCtx.font = "48px serif";
 fontCtx.fillText("YAH", 10, 50);
 
-const imageData = fontCtx.getImageData(0, 0, fontRasterizer.width, fontRasterizer.height);
-console.log(imageData);
+console.log(extractPixels(fontRasterizer, [1, 1, 1, 1]));
+
+// const imageData = fontCtx.getImageData(0, 0, fontRasterizer.width, fontRasterizer.height);
+// console.log(imageData);
