@@ -34,6 +34,15 @@ const main = async () => {
     // TODO: resize the rasterizer canvas as well?
     startResizeObservation(renderTarget, device.limits.maxTextureDimension2D);
 
+    // TODO: proper sizing
+    fontRasterizer.width = 400;//renderTarget.width;
+    fontRasterizer.height = 400;//renderTarget.height;
+
+    const fontCtx = fontRasterizer.getContext("2d");
+    fontCtx.font = "48px serif";
+    ctx.fillText("YAH", 10, 50);
+
+
 
 
     // These errors are automatically surfaced in the chrome terminal,
@@ -196,4 +205,18 @@ const main = async () => {
 //     main();
 // }
 
-main();
+//main();
+
+let fontRasterizer = document.body.appendChild(document.createElement("canvas"));
+fontRasterizer.id = "fontRasterizerZ";// TODO remove Z
+
+    // TODO: proper sizing
+fontRasterizer.width = 400;//renderTarget.width;
+fontRasterizer.height = 400;//renderTarget.height;
+
+const fontCtx = fontRasterizer.getContext("2d");
+fontCtx.font = "48px serif";
+fontCtx.fillText("YAH", 10, 50);
+
+const imageData = fontCtx.getImageData(0, 0, fontRasterizer.width, fontRasterizer.height);
+console.log(imageData);
