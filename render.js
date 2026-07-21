@@ -3,21 +3,23 @@ import { dotStruct } from "./structs.js";
 export const renderShaderCode = /* wgsl */ `
 ${ dotStruct.code}
 
-// Kept for reference
-// struct VertexOutput {
-//     @builtin(position) position : vec4f,
-//     @location(0) color : vec4f
-// }
+struct VertexOutput {
+    @builtin(position) position : vec4f,
+    @location(0) color : vec4f
+}
 
 @group(0) @binding(0) var<storage, read> dots : array<Dot>; 
 
 @vertex fn drawDots(@builtin(vertex_index) vertexIdx : u32, 
-                    @builtin(instance_index) instanceIdx : u32) -> @builtin(position) vec4f {
+                    @builtin(instance_index) instanceIdx : u32) -> VertexOutput {
     let dot = dots[instanceIdx];
-    return vec4f(dot.position, 1, 1);
+    return VertexOutput(
+        vec4f(dot.position, 1, 1),
+        dot.color
+    );
 }
 
-@fragment fn solidColor(@builtin(position) pos : vec4f) -> @location(0) vec4f {
-    return vec4f(1, 0, 0, 1);
+@fragment fn solidColor(fragInput : VertexOutput) -> @location(0) vec4f {
+    return fragInput.color;
 }
 `;
