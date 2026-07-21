@@ -42,8 +42,8 @@ const main = async () => {
     fontRasterizer.height = 746;//renderTarget.height;
 
     const fontCtx = fontRasterizer.getContext("2d");
-    fontCtx.font = "96px serif";
-    fontCtx.fillText("Kinda half-baked", 300, 300);
+    fontCtx.font = "196px serif";
+    fontCtx.fillText("🐱💜", 300, 300);
 
     //console.log();
 
@@ -98,7 +98,7 @@ const main = async () => {
         label: "render pass descriptor",
         colorAttachments: [
             {
-                clearValue: [0, 1, 0, 1],
+                clearValue: [0, 0, 0, 1],
                 loadOp: "clear",
                 storeOp: "store"
             }
@@ -107,7 +107,7 @@ const main = async () => {
 
     const dots = dotStruct.createFilledArray(extractPixels(fontRasterizer, [1, 1, 1, 1]).map(
         (d) => {
-            return {...d, velocity: [randClip() *.0008, randClip() * .0008]}
+            return {...d, velocity: [0, 0]}
         }
     ));
 
@@ -230,7 +230,7 @@ main();
 //     main();
 // }
 
-main();
+// main();
 
 // const imageData = fontCtx.getImageData(0, 0, fontRasterizer.width, fontRasterizer.height);
 // console.log(imageData);

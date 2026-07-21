@@ -11,7 +11,7 @@ html, body {
 }
 
 #fontRasterizer {
-  /* position: absolute;
-  top: -10000px;
-  left: -10000px; */
+  position: absolute;
+  top: -5000px;
+  left: -5000px;
 }

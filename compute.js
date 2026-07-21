@@ -18,7 +18,9 @@ ${uniformsStruct.code}
         let id = global_invocation_index(workgroup_id, local_invocation_index, num_workgroups,
                                          1 /* CHANGE ME WHEN WORKGROUP SIZE CHANGES */);
         if(id >= arrayLength(&dots)) { return; }
+        let gravFactor = 1000.;
         if (uniforms.pointerHeld > 0) {
+            dots[id].velocity += (uniforms.pointerLoc - dots[id].position)/gravFactor * length(uniforms.pointerLoc-dots[id].position);
             dots[id].position += dots[id].velocity;
         }
         
