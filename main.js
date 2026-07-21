@@ -17,9 +17,13 @@ const main = async () => {
     }))?.requestDevice();
 
     let renderTarget;
+    let fontRasterizer;
     if(device) {        
         renderTarget = document.body.appendChild(document.createElement("canvas"));
         renderTarget.id = "renderTarget";
+
+        fontRasterizer = document.body.appendChild(document.createElement("canvas"));
+        fontRasterizer.id = "fontRasterizer";
     } else {
         let errorMessage = document.body.appendChild(document.createElement("span"));
         errorMessage.innerText = "No WebGPU support :( "
@@ -27,7 +31,10 @@ const main = async () => {
         return;
     }
 
+    // TODO: resize the rasterizer canvas as well?
     startResizeObservation(renderTarget, device.limits.maxTextureDimension2D);
+
+
 
     // These errors are automatically surfaced in the chrome terminal,
     // but need to be explicitly listened for on webkit
