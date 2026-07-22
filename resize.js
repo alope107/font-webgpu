@@ -8,6 +8,7 @@ const observer = new ResizeObserver(entries => {
             const height = entry.contentBoxSize[0].blockSize;
             canvas.width = Math.max(1, Math.min(width, maxTextureDimension2D));
             canvas.height = Math.max(1, Math.min(height, maxTextureDimension2D));
+            // TODO: we should be handling this so that we're not repeatedly making new offscreen canvii
             rasterizerResolver(new OffscreenCanvas(canvas.width, canvas.height));
         }
     });

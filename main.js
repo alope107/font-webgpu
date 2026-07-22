@@ -1,4 +1,5 @@
 import { computeShaderCode } from "./compute.js";
+import { configFromQueryParams } from "./config.js";
 import { randClip, randDots } from "./random.js";
 import { extractPixels } from "./raster.js";
 import { renderShaderCode } from "./render.js";
@@ -23,6 +24,8 @@ const main = async () => {
         return;
     }
 
+    const config = configFromQueryParams();
+
     const renderTarget = document.body.appendChild(document.createElement("canvas"));
     renderTarget.id = "renderTarget";
 
@@ -34,7 +37,7 @@ const main = async () => {
     const fontCtx = fontRasterizer.getContext("2d");
     fontCtx.font = "300px Comic Sans";
     fontCtx.fillStyle = "white";
-    fontCtx.fillText("🐱🐱", 30, 300);
+    fontCtx.fillText(config.text, 30, 300);
 
     // These errors are automatically surfaced in the chrome terminal,
     // but need to be explicitly listened for on webkit
