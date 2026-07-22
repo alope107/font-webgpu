@@ -50,13 +50,12 @@ export const dotStruct = (() => {
 export const uniformsStruct = (() => { 
     const code = /* wgsl */ `
         struct Uniforms {
-            gravity: vec2f,  //8 bytes
             pointerLoc: vec2f, // 8 bytes, location of pointer
             pointerPressed: u32, // 4 bytes, was the pointer first pressed this frame?
             pointerHeld: u32 // 4 bytes, is the pointer currently held down?
-        } // total 24 bytes
+        } // total 16 bytes
 `;
-    const byteCount = 24;
+    const byteCount = 16;
     const u32Count = byteCount/4;
     const floatCount = byteCount/4;
     const createEmpty = () => {
@@ -64,10 +63,9 @@ export const uniformsStruct = (() => {
         return {
             data,
             views: {
-                gravityView: new Float32Array(data, 0),
-                pointerLocView: new Float32Array(data, 8),
-                pointerPressedView: new Uint32Array(data, 16),
-                pointerHeldView: new Uint32Array(data, 20),
+                pointerLocView: new Float32Array(data, 0),
+                pointerPressedView: new Uint32Array(data, 8),
+                pointerHeldView: new Uint32Array(data, 12),
             },
             count: 1
         };
@@ -78,9 +76,8 @@ export const uniformsStruct = (() => {
         u32Count,
         floatCount,
         createEmpty,
-        createFilled: ({gravity, pointerLoc, pointerPressed, pointerHeld}) => {
+        createFilled: ({pointerLoc, pointerPressed, pointerHeld}) => {
             const uniform = createEmpty();
-            uniform.views.gravityView.set(gravity, 0);
             uniform.views.pointerLocView.set(pointerLoc, 0);
             uniform.views.pointerPressedView.set([pointerPressed], 0);
             uniform.views.pointerHeldView.set([pointerHeld], 0);

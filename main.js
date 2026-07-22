@@ -5,14 +5,9 @@ import { renderShaderCode } from "./render.js";
 import { startResizeObservation } from "./resize.js";
 import { dotStruct, uniformsStruct } from "./structs.js";
 
-let accel = {x: 0, y:-9.8, z:0};
 let pointerLoc = [0, 0];
 let pointerHeldNow = false;
 let pointerHeldLastFrame = false;
-
-const DOT_COUNT = 100;
-
-
 
 const main = async () => {
 
@@ -34,12 +29,13 @@ const main = async () => {
     // TODO: resize the rasterizer canvas as well?
     startResizeObservation(renderTarget, device.limits.maxTextureDimension2D);
 
+
     //TODO: NO HARDCODE
     const fontRasterizer = new OffscreenCanvas(1035, 746);
     const fontCtx = fontRasterizer.getContext("2d");
-    fontCtx.font = "32px Comic Sans";
+    fontCtx.font = "196px Comic Sans";
     fontCtx.fillStyle = "white";
-    fontCtx.fillText("riverrun, from swerve of shore to bend of bay", 30, 300);
+    fontCtx.fillText("🐱🐱", 30, 300);
 
     // These errors are automatically surfaced in the chrome terminal,
     // but need to be explicitly listened for on webkit
@@ -117,10 +113,9 @@ const main = async () => {
 
 
     let uniform = uniformsStruct.createFilled({
-        gravity: [0, 0],
-        pointerLoc: [0, 0],//TODO
-        pointerHeld: 0,// TODO
-        pointerPressed: 0 // TODO
+        pointerLoc: [0, 0],
+        pointerHeld: 0,
+        pointerPressed: 0
     });
     const uniformBuffer = device.createBuffer({
         label: "uniform buffer",
@@ -199,33 +194,3 @@ const main = async () => {
 };
 
 main();
-
-// const initializeAccelerometer = async (e) => {
-//     document.getElementById("prompt").remove();
-//     window.addEventListener("devicemotion", (event) => {
-//         let accelInclG = event.accelerationIncludingGravity;
-//         let accelWithoutG = event.acceleration;
-//         if(accelInclG.x != null) {
-//             accel.x = (accelInclG.x +accelWithoutG.x*EXTRA_SHAKE_POWER)*-1;
-//             accel.y = (accelInclG.y +accelWithoutG.y*EXTRA_SHAKE_POWER)*-1;
-//             accel.z = (accelInclG.z +accelWithoutG.z*EXTRA_SHAKE_POWER);
-//         }
-//     });
-//     main();
-// }
-
-// Only need user input if on mobile so accelerometer can be accessed
-// Otherwise just start immedately on desktop
-// if(!window.matchMedia('(hover: hover)').matches && window.matchMedia('(pointer: coarse)').matches) {
-//     let userPrompt = document.body.appendChild(document.createElement("h1"));
-//     userPrompt.innerText = "Press me";
-//     userPrompt.id="prompt";
-//     userPrompt.addEventListener("pointerup", initializeAccelerometer);
-// } else {
-//     main();
-// }
-
-// main();
-
-// const imageData = fontCtx.getImageData(0, 0, fontRasterizer.width, fontRasterizer.height);
-// console.log(imageData);
