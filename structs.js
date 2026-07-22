@@ -5,11 +5,13 @@ export const dotStruct = (() => {
     const code = /* wgsl */`
         struct Dot {
             color: vec4f, // 16 bytes
+            originalPosition: vec2f, // 8 bytes
             position: vec2f, // 8 bytes
             velocity: vec2f // 8 bytes
-        }  // total 32 bytes
+            // pad 8 bytes
+        }  // total 48 bytes
     `
-    const byteCount = 32;
+    const byteCount = 48;
     const floatCount = byteCount / 4;
     const createEmptyArray = (dotCount) => {
         const data = new ArrayBuffer(byteCount * dotCount);
@@ -17,17 +19,19 @@ export const dotStruct = (() => {
             data,
             views: {
                 colorView: new Float32Array(data, 0),
-                positionView: new Float32Array(data, 16),
-                velocityView: new Float32Array(data, 24),
+                originalPositionView: new Float32Array(data, 16),
+                positionView: new Float32Array(data, 24),
+                velocityView: new Float32Array(data, 32),
             },
             count: dotCount
         };
     };
     const createFilledArray = (dotData) => {
         const data = createEmptyArray(dotData.length);
-        const {colorView, positionView, velocityView} = data.views;
+        const {colorView, originalPositionView, positionView, velocityView} = data.views;
         dotData.forEach(({color, position, velocity}, i) => {
             colorView.set(color, i*floatCount);
+            originalPositionView.set(position, i*floatCount);
             positionView.set(position, i*floatCount);
             velocityView.set(velocity, i*floatCount)
         });
@@ -41,8 +45,6 @@ export const dotStruct = (() => {
         createFilledArray
     };
 })();
-
-// Old structs for reference
 
 
 export const uniformsStruct = (() => { 

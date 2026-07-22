@@ -46,10 +46,10 @@ const main = async () => {
     fontRasterizer.height = 746;//renderTarget.height;
 
     const fontCtx = fontRasterizer.getContext("2d");
-    fontCtx.font = "196px Comic Sans";
+    fontCtx.font = "32px Comic Sans";
     fontCtx.fillStyle = "white";
     // fontCtx.fillRect(0, 0, fontRasterizer.width, fontRasterizer.height)
-    fontCtx.fillText("🐶🐶🐶🐶🐶🐶🐶🐶", 0, 300);
+    fontCtx.fillText("riverrun, from swerve of shore to bend of bay", 30, 300);
 
 
     //console.log();
