@@ -1,6 +1,6 @@
 // Ripped pretty much exactly from https://webgpufundamentals.org/webgpu/lessons/webgpu-fundamentals.html
 
-export const startResizeObservation = (canvas, maxTextureDimension2D) => {
+export const startResizeObservation = (canvas, rasterizerResolver, maxTextureDimension2D) => {
 const observer = new ResizeObserver(entries => {
         for (const entry of entries) {
             const canvas = entry.target;
@@ -8,6 +8,7 @@ const observer = new ResizeObserver(entries => {
             const height = entry.contentBoxSize[0].blockSize;
             canvas.width = Math.max(1, Math.min(width, maxTextureDimension2D));
             canvas.height = Math.max(1, Math.min(height, maxTextureDimension2D));
+            rasterizerResolver(new OffscreenCanvas(canvas.width, canvas.height));
         }
     });
     observer.observe(canvas);

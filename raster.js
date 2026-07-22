@@ -18,8 +18,6 @@ export const extractPixels = (canvas, backgroundColor, colorTransform=uint8RGBto
     for(let pixel = 0; pixel < canvas.width * canvas.height; pixel++) {
         const idx = pixel * CHANNEL_COUNT;
         const color = [...data.slice(idx, idx+CHANNEL_COUNT)]; // idk if conversion to js arr is actually needed
-        // console.log("bub", {row: Math.trunc(pixel/canvas.width), col: pixel % canvas.width})
-        // TODO: only check RGB for equality?
         if(!arrayEq(color, backgroundColor) && color[3] > 0) {
             pixels.push({
                 position: toClip({row: Math.trunc(pixel/canvas.width), col: pixel % canvas.width}, 

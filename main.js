@@ -26,14 +26,14 @@ const main = async () => {
     const renderTarget = document.body.appendChild(document.createElement("canvas"));
     renderTarget.id = "renderTarget";
 
+    const {promise : rasterizerPromise, resolve : rasterizerResolver} = Promise.withResolvers();
+
     // TODO: resize the rasterizer canvas as well?
-    startResizeObservation(renderTarget, device.limits.maxTextureDimension2D);
+    startResizeObservation(renderTarget, rasterizerResolver, device.limits.maxTextureDimension2D);
 
-
-    //TODO: NO HARDCODE
-    const fontRasterizer = new OffscreenCanvas(1035, 746);
+    const fontRasterizer = await rasterizerPromise;
     const fontCtx = fontRasterizer.getContext("2d");
-    fontCtx.font = "196px Comic Sans";
+    fontCtx.font = "300px Comic Sans";
     fontCtx.fillStyle = "white";
     fontCtx.fillText("🐱🐱", 30, 300);
 
