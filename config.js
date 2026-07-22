@@ -2,7 +2,8 @@
 const defaults = {
     text: "🐱💜",
     font: "Comic Sans",
-    size: "300px"
+    size: "300px",
+    color: "white"
 };
 
 // does not currently validate params!

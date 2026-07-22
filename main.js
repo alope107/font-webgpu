@@ -36,7 +36,7 @@ const main = async () => {
     const fontRasterizer = await rasterizerPromise;
     const fontCtx = fontRasterizer.getContext("2d");
     fontCtx.font = `${config.size} ${config.font}`;
-    fontCtx.fillStyle = "white";
+    fontCtx.fillStyle = config.color;
     fontCtx.fillText(config.text, 30, 300);
 
     // These errors are automatically surfaced in the chrome terminal,
