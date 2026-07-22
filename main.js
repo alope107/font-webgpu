@@ -103,8 +103,6 @@ const main = async () => {
         }
     ));
 
-    console.log(dots);
-
 
     // TODO: double buffer -performance gain - cannot update buffer while rendering
     const dotBuffer = device.createBuffer({
