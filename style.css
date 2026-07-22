@@ -9,9 +9,3 @@ html, body {
   height: 100%;
   touch-action: none;
 }
-
-#fontRasterizer {
-  position: absolute;
-  top: -5000px;
-  left: -5000px;
-}

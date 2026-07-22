@@ -21,39 +21,25 @@ const main = async () => {
         powerPreference: "high-performance",
     }))?.requestDevice();
 
-    let renderTarget;
-    let fontRasterizer;
-    if(device) {        
-        renderTarget = document.body.appendChild(document.createElement("canvas"));
-        renderTarget.id = "renderTarget";
-
-        //TODO: apparently there's such thing as an OffscreenCanvas. Switch to this!!
-        fontRasterizer = document.body.appendChild(document.createElement("canvas"));
-        fontRasterizer.id = "fontRasterizer";
-    } else {
-        let errorMessage = document.body.appendChild(document.createElement("span"));
+    if(!device) {        
+        const errorMessage = document.body.appendChild(document.createElement("span"));
         errorMessage.innerText = "No WebGPU support :( "
         console.error("No WebGPU support :(");
         return;
     }
 
+    const renderTarget = document.body.appendChild(document.createElement("canvas"));
+    renderTarget.id = "renderTarget";
+
     // TODO: resize the rasterizer canvas as well?
     startResizeObservation(renderTarget, device.limits.maxTextureDimension2D);
 
-
-    // TODO: proper sizing
-    fontRasterizer.width = 1035;//renderTarget.width;
-    fontRasterizer.height = 746;//renderTarget.height;
-
+    //TODO: NO HARDCODE
+    const fontRasterizer = new OffscreenCanvas(1035, 746);
     const fontCtx = fontRasterizer.getContext("2d");
     fontCtx.font = "32px Comic Sans";
     fontCtx.fillStyle = "white";
-    // fontCtx.fillRect(0, 0, fontRasterizer.width, fontRasterizer.height)
     fontCtx.fillText("riverrun, from swerve of shore to bend of bay", 30, 300);
-
-
-    //console.log();
-
 
     // These errors are automatically surfaced in the chrome terminal,
     // but need to be explicitly listened for on webkit
@@ -119,7 +105,7 @@ const main = async () => {
     ));
 
 
-    // Kept for reference
+    // TODO: double buffer -performance gain - cannot update buffer while rendering
     const dotBuffer = device.createBuffer({
         label: "dotBuffer",
         size: dots.data.byteLength,
@@ -177,6 +163,8 @@ const main = async () => {
     const render = async() => {
         const encoder = device.createCommandEncoder({label: "encoder"});
 
+        //Optimize with render bundles???
+        //
         let computePass = encoder.beginComputePass();
         computePass.setPipeline(moveDotsPipeline);
         computePass.setBindGroup(0, computeBindGroup);
