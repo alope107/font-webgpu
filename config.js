@@ -1,6 +1,8 @@
 // Tunables!
 const defaults = {
-    text: "🐱💜"
+    text: "🐱💜",
+    font: "Comic Sans",
+    size: "300px"
 };
 
 // does not currently validate params!

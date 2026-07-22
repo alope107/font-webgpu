@@ -35,7 +35,7 @@ const main = async () => {
 
     const fontRasterizer = await rasterizerPromise;
     const fontCtx = fontRasterizer.getContext("2d");
-    fontCtx.font = "300px Comic Sans";
+    fontCtx.font = `${config.size} ${config.font}`;
     fontCtx.fillStyle = "white";
     fontCtx.fillText(config.text, 30, 300);
 
