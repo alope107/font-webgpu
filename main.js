@@ -13,7 +13,10 @@ let pointerHeldLastFrame = false;
 const DOT_COUNT = 100;
 
 
+
 const main = async () => {
+
+    // TODO check for max supported first
     const device = await (await navigator.gpu?.requestAdapter( {
         powerPreference: "high-performance",
     }))?.requestDevice();
@@ -24,6 +27,7 @@ const main = async () => {
         renderTarget = document.body.appendChild(document.createElement("canvas"));
         renderTarget.id = "renderTarget";
 
+        //TODO: apparently there's such thing as an OffscreenCanvas. Switch to this!!
         fontRasterizer = document.body.appendChild(document.createElement("canvas"));
         fontRasterizer.id = "fontRasterizer";
     } else {
@@ -42,8 +46,11 @@ const main = async () => {
     fontRasterizer.height = 746;//renderTarget.height;
 
     const fontCtx = fontRasterizer.getContext("2d");
-    fontCtx.font = "196px serif";
-    fontCtx.fillText("🐱💜", 300, 300);
+    fontCtx.font = "196px Comic Sans";
+    fontCtx.fillStyle = "white";
+    // fontCtx.fillRect(0, 0, fontRasterizer.width, fontRasterizer.height)
+    fontCtx.fillText("🐶🐶🐶🐶🐶🐶🐶🐶", 0, 300);
+
 
     //console.log();
 
@@ -173,7 +180,7 @@ const main = async () => {
         let computePass = encoder.beginComputePass();
         computePass.setPipeline(moveDotsPipeline);
         computePass.setBindGroup(0, computeBindGroup);
-        computePass.dispatchWorkgroups(dots.count);
+        computePass.dispatchWorkgroups(Math.ceil(dots.count/64), Math.ceil(dots.count/64), 1);
         computePass.end();
 
         renderPassDescriptor.colorAttachments[0].view = ctx.getCurrentTexture().createView();
