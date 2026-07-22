@@ -20,6 +20,7 @@ struct VertexOutput {
 }
 
 @fragment fn solidColor(fragInput : VertexOutput) -> @location(0) vec4f {
-    return fragInput.color;
+    return vec4f(fragInput.color.rgb*fragInput.color.a, fragInput.color.a);
+    // return fragInput.color;
 }
 `;

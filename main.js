@@ -28,7 +28,6 @@ const main = async () => {
 
     const {promise : rasterizerPromise, resolve : rasterizerResolver} = Promise.withResolvers();
 
-    // TODO: resize the rasterizer canvas as well?
     startResizeObservation(renderTarget, rasterizerResolver, device.limits.maxTextureDimension2D);
 
     const fontRasterizer = await rasterizerPromise;
@@ -47,7 +46,8 @@ const main = async () => {
     const ctx = renderTarget.getContext("webgpu");
     ctx.configure( {
         device,
-        format: renderFormat
+        format: renderFormat,
+        alphaMode: "premultiplied"
     });
 
     const computeModule = device.createShaderModule({
@@ -99,6 +99,8 @@ const main = async () => {
             return {...d, velocity: [0, 0]}
         }
     ));
+
+    console.log(dots);
 
 
     // TODO: double buffer -performance gain - cannot update buffer while rendering

@@ -26,5 +26,6 @@ export const extractPixels = (canvas, backgroundColor, colorTransform=uint8RGBto
             });
         }
     }
+    console.log(pixels);
     return pixels;
 };
